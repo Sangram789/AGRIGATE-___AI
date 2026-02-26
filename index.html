@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriGuard AI | Hackathon Edition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">🌱 AgriGuard AI</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#iot-stats">Field Data</a></li>
+            <li><a href="#ai-scanner">AI Scanner</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+        <div class="nav-actions">
+            <label class="theme-switch" for="checkbox">
+                <input type="checkbox" id="checkbox" />
+                <div class="slider round"></div>
+            </label>
+            <button class="btn-login" onclick="openLogin()">Login</button>
+        </div>
+    </nav>
+
+    <header id="home" class="hero">
+        <div class="hero-content">
+            <h1>Predict. Protect. Prosper.</h1>
+            <p>Advanced Plant Pathology & IoT Telemetry Dashboard</p>
+            <button class="btn-primary" onclick="document.getElementById('ai-scanner').scrollIntoView()">Start Scanning</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="iot-stats" class="sensor-grid">
+            <div class="card sensor-card">
+                <h3>Temperature</h3>
+                <div class="value"><span id="temp">--</span>°C</div>
+                <small id="temp-stat">Stable</small>
+            </div>
+            <div class="card sensor-card">
+                <h3>Soil Moisture</h3>
+                <div class="value"><span id="soil">--</span>%</div>
+                <small id="soil-stat">Optimal</small>
+            </div>
+            <div class="card weather-card">
+                <h3>Local Forecast</h3>
+                <div class="weather-main">
+                    <span id="weather-icon">☀️</span>
+                    <span id="weather-temp">31°C</span>
+                </div>
+                <p id="weather-desc">Clear Sky</p>
+            </div>
+        </section>
+
+        <section id="ai-scanner" class="ai-container">
+            <div class="card ai-card">
+                <h3>AI Disease Scanner</h3>
+                <div class="viewer-box">
+                    <img id="user-image" src="#" alt="Preview" style="display:none;">
+                </div>
+                <div class="controls">
+                    <label for="image-upload" class="btn-upload">📁 Upload</label>
+                    <input type="file" id="image-upload" accept="image/*" style="display:none">
+                    <button class="btn-reset" id="btn-reset" style="display:none">🔄 Reset</button>
+                    <button class="btn-analyze" id="btn-analyze" style="display:none">🔍 Analyze Image</button>
+                </div>
+            </div>
+
+            <div class="card ai-card">
+                <h3>Diagnosis & Action</h3>
+                <div class="diagnosis-content">
+                    <div id="label-container" class="probability-text">Ready to scan...</div>
+                    <div id="status-box" class="status-badge">System Ready</div>
+                    <div class="recommendation-box">
+                        <strong>Action Plan:</strong>
+                        <p id="diagnosis">Detection results will appear here with biological treatment steps.</p>
+                    </div>
+                    <button class="btn-secondary" onclick="downloadReport()">📥 Download Health Report</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="card about-section">
+            <h2>The Technology</h2>
+            <div class="about-grid">
+                <div class="tech-tag">TensorFlow.js</div>
+                <div class="tech-tag">IoT MQTT</div>
+                <div class="tech-tag">Edge Computing</div>
+            </div>
+            <p>Our solution utilizes <strong>Deep Learning</strong> on the edge, meaning data is processed locally to protect farmer privacy and ensure speed in remote areas with low connectivity.</p>
+        </section>
+    </main>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

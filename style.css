@@ -1,0 +1,413 @@
+:root {
+    --bg-color: #f8faf8;
+    --card-bg: #ffffff;
+    --text-main: #1a1a1a;
+    --primary-green: #2e7d32;
+    --accent-green: #4caf50;
+    --border-color: #e0e0e0;
+}
+
+[data-theme="dark"] {
+    --bg-color: #0f1710;
+    --card-bg: #1a231b;
+    --text-main: #f0f0f0;
+    --border-color: #2d382e;
+}
+
+* { box-sizing: border-box; transition: all 0.25s ease; }
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+}
+
+/* Nav & Hero */
+.navbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 5%; background: var(--card-bg); 
+    position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color);
+}
+
+.nav-links { display: flex; list-style: none; gap: 2rem; }
+.nav-links a { text-decoration: none; color: var(--text-main); font-weight: 500; }
+.nav-links a:hover { color: var(--primary-green); }
+
+.hero { padding: 80px 5%; text-align: center; background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; }
+
+/* Grid Systems */
+.container { max-width: 1100px; margin: -40px auto 40px; padding: 0 20px; }
+
+.sensor-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px; margin-bottom: 30px;
+}
+
+.card {
+    background: var(--card-bg); border-radius: 16px; padding: 24px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border: 1px solid var(--border-color);
+}
+
+.weather-card { background: var(--primary-green); color: white; }
+
+.ai-container { display: flex; gap: 20px; margin-top: 20px; }
+.ai-card { flex: 1; min-height: 420px; display: flex; flex-direction: column; }
+
+.viewer-box {
+    width: 100%; height: 240px; background: #000; border-radius: 12px;
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
+}
+
+/* Buttons */
+.btn-primary { background: white; color: var(--primary-green); border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+.btn-secondary { width: 100%; padding: 12px; margin-top: 15px; border-radius: 8px; border: 1px solid var(--primary-green); background: transparent; color: var(--primary-green); cursor: pointer; }
+
+/* Theme Toggle */
+.theme-switch-wrapper { display: flex; align-items: center; gap: 8px; }
+.theme-switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+.theme-switch input { display:none; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
+.slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--primary-green); }
+input:checked + .slider:before { transform: translateX(20px); }
+
+@media (max-width: 768px) {
+    .ai-container { flex-direction: column; }
+    .navbar { padding: 1rem; }
+    .nav-links { display: none; }
+}
+
+/* 1. Global Animations */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -468px 0; }
+    100% { background-position: 468px 0; }
+}
+
+@keyframes pulse-green {
+    0% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(46, 125, 50, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
+}
+
+/* 2. Advanced Navigation Hover */
+.nav-links a {
+    position: relative;
+    padding: 5px 10px;
+    transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-links a::before {
+    content: "";
+    position: absolute;
+    width: 100%; height: 100%;
+    background: var(--primary-green);
+    top: 0; left: 0;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+    border-radius: 4px;
+    opacity: 0.1;
+}
+
+.nav-links a:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* 3. Card Micro-interactions */
+.card {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    animation: fadeInUp 0.6s ease backwards;
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* 4. The "Scanner" Glow Effect */
+.viewer-box {
+    border: 2px solid transparent;
+    transition: border-color 0.5s ease;
+}
+
+.viewer-box.active {
+    border-color: var(--primary-green);
+    animation: pulse-green 2s infinite;
+}
+
+/* 5. Advanced Glassmorphism for Sensor Cards */
+.sensor-card {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="dark"] .sensor-card {
+    background: rgba(26, 35, 27, 0.7) !important;
+}
+
+/* 6. Button Hover Shine */
+.btn-primary {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after {
+    content: "";
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: rotate(45deg);
+    transition: 0.5s;
+}
+
+.btn-primary:hover::after {
+    left: 120%;
+}
+
+
+/*Button style*/
+/* 1. Global Button Base - The "Haptic" Feel */
+button, .btn-upload {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 24px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* 2. Primary Button - The "Emerald Glow" */
+.btn-start, .btn-primary {
+    background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-start:hover, .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px -5px rgba(46, 125, 50, 0.5);
+    filter: brightness(1.1);
+}
+
+.btn-start:active, .btn-primary:active {
+    transform: translateY(1px);
+}
+
+/* 3. Secondary/Reset Button - The "Matte Glass" */
+.btn-reset, .btn-upload {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    color: #37474f;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .btn-reset, 
+[data-theme="dark"] .btn-upload {
+    background: rgba(45, 55, 46, 0.8);
+    color: #eceff1;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-reset:hover, .btn-upload:hover {
+    background: var(--primary-green);
+    color: white;
+    border-color: var(--primary-green);
+}
+
+/* 4. Login Button - The "Outline Minimalist" */
+.btn-login {
+    background: transparent;
+    color: var(--primary-green);
+    border: 2px solid var(--primary-green);
+    padding: 8px 24px;
+    border-radius: 30px;
+}
+
+.btn-login:hover {
+    background: var(--primary-green);
+    color: white;
+    box-shadow: 0 0 15px rgba(46, 125, 50, 0.3);
+}
+
+/* 5. The "Shine" Animation Layer */
+button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+button:hover::after {
+    left: 100%;
+}
+
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    min-width: 280px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 6px solid #ccc;
+    color: #333;
+    animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+[data-theme="dark"] .toast {
+    background: rgba(30, 30, 30, 0.85);
+    color: #eee;
+}
+
+.toast.success { border-left-color: #2e7d32; }
+.toast.warning { border-left-color: #f57c00; }
+.toast.danger { border-left-color: #d32f2f; }
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    to { transform: translateY(-20px); opacity: 0; }
+}
+
+/*style AI analyze button*/
+.btn-analyze {
+    background: linear-gradient(135deg, #3f51b5 0%, #1a237e 100%);
+    color: white;
+    display: none; /* Hidden until image is uploaded */
+    animation: pulse-blue 2s infinite;
+}
+
+.btn-analyze:hover {
+    box-shadow: 0 10px 20px -5px rgba(63, 81, 181, 0.5);
+    transform: translateY(-2px);
+}
+
+@keyframes pulse-blue {
+    0% { box-shadow: 0 0 0 0 rgba(63, 81, 181, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(63, 81, 181, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(63, 81, 181, 0); }
+}
+
+.gemini-card {
+    margin-top: 30px;
+    border: 2px solid #3f51b5;
+    background: linear-gradient(to bottom right, var(--card-bg), rgba(63, 81, 181, 0.05));
+}
+
+.gemini-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* The Animated AI Orb */
+.ai-orb {
+    width: 20px;
+    height: 20px;
+    background: #3f51b5;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #3f51b5;
+}
+
+.ai-orb.thinking {
+    animation: orb-pulse 1.5s infinite;
+}
+
+@keyframes orb-pulse {
+    0% { transform: scale(1); box-shadow: 0 0 10px #3f51b5; }
+    50% { transform: scale(1.5); box-shadow: 0 0 25px #3f51b5; opacity: 0.7; }
+    100% { transform: scale(1); box-shadow: 0 0 10px #3f51b5; }
+}
+
+.gemini-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+.insight-box {
+    padding: 15px;
+    background: rgba(0,0,0,0.03);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+[data-theme="dark"] .insight-box { background: rgba(255,255,255,0.05); }
+
+.insight-box.highlight {
+    border-left: 4px solid #3f51b5;
+    background: rgba(63, 81, 181, 0.05);
+}
+
+.gemini-footer {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+    text-align: right;
+    opacity: 0.6;
+}
+
+
+/*IMAGE BOX*/
+/* Add this at the end of style.css */
+#user-image {
+    width: 100%;           /* Fills the container width */
+    height: 100%;          /* Fills the container height */
+    object-fit: contain;   /* Scaled to fit without stretching or cropping */
+    display: none;         /* Remains hidden until an image is uploaded */
+    border-radius: 12px;   /* Matches your viewer-box corners */
+}
+
+.viewer-box {
+    display: flex;         /* Centers the image if it's smaller than the box */
+    align-items: center;
+    justify-content: center;
+    background-color: #000;/* Black bars for images that don't match aspect ratio */
+}
